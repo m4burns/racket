@@ -3844,9 +3844,11 @@ Scheme_Object *scheme_fd_to_semaphore(intptr_t fd, int mode, int is_socket)
     }
 # elif defined(HAVE_EPOLL_SYSCALL)
     {
-      int kr;
-      kr = epoll_ctl(scheme_semaphore_fd_kqueue, EPOLL_CTL_DEL, fd, NULL);
-      log_kqueue_error("remove", kr);
+      if(SCHEME_TRUEP(SCHEME_VEC_ELS(v)[0]) || SCHEME_TRUEP(SCHEME_VEC_ELS(v)[1])) {
+        int kr;
+        kr = epoll_ctl(scheme_semaphore_fd_kqueue, EPOLL_CTL_DEL, fd, NULL);
+        log_kqueue_error("remove", kr);
+      }
     }
 # else
     MZ_FD_CLR(fd, r);
